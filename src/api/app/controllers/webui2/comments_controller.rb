@@ -18,6 +18,25 @@ module Webui2::CommentsController
     end
   end
 
+  def webui2_update
+    comment = Comment.find(params[:id])
+    authorize comment, :update?
+    @commentable = comment.commentable
+    comment.update!(permitted_params)
+    respond_to do |format|
+      if comment.update(permitted_params)
+        flash.now[:success] = 'Comment updated successfully.'
+        status = :ok
+      else
+        flash.now[:error] = 'Failed to update comment'
+        status = :unprocessable_entity
+      end
+      format.html do
+        render(partial: 'webui2/webui/comment/comment_list', locals: { commentable: @commentable }, status: status)
+      end
+    end
+  end
+
   def webui2_destroy
     comment = Comment.find(params[:id])
     authorize comment, :destroy?

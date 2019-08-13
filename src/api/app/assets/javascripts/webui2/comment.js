@@ -38,4 +38,16 @@ $(document).ready(function(){
       $commentsList.html(data.responseText);
     });
   });
+
+  $('.comments-list').on('ajax:complete', '.edit-comment-form', function(_, data) {
+    var $this = $(this),
+        $commentsList = $this.closest('.comments-list'),
+        $commentId = $this.find('#id').val()
+        $form = $('#edit-comment-modal-' + $commentId);
+
+    $form.modal('hide');
+    $form.on('hidden.bs.modal', function () {
+      $commentsList.html(data.responseText);
+    });
+  });
 });

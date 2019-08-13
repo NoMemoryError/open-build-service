@@ -3,6 +3,12 @@
     %li.list-inline-item
       %button.btn.btn-outline-secondary{ data: { toggle: 'collapse', target: "#reply_form_of_#{comment.id}" } }
         Reply
+  - if policy(comment).update?
+    %li.list-inline-item
+      = render(partial: 'webui/comment/edit_dialog', locals: { comment: comment })
+      = link_to('#', data: { toggle: 'modal', target: "#edit-comment-modal-#{comment.id}" },
+                class: 'btn btn-outline-primary', title: 'Edit comment') do
+        Edit      
   - if policy(comment).destroy?
     %li.list-inline-item
       = render(partial: 'webui/comment/delete_dialog', locals: { comment: comment })

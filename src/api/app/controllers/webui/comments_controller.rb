@@ -24,6 +24,10 @@ class Webui::CommentsController < Webui::WebuiController
     end
   end
 
+  def update
+    return if params[:no_switch].nil? && switch_to_webui2
+  end
+
   def destroy
     return if params[:no_switch].nil? && switch_to_webui2
 

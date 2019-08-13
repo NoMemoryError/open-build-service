@@ -67,6 +67,20 @@ RSpec.describe Webui::CommentsController, type: :controller do
     end
   end
 
+  describle 'PUT/PATCH #update' do
+    let(:admin) { create(:admin_user, login: 'Admin') }
+    let(:comment) { create(:comment_project, user: user) }
+    let(:other_comment) { create(:comment_project) }
+    let(:updated_body) { 'Updated body' }
+
+    context 'update own comments' do
+      before { patch :update, params: { id: comment.id, body: updated_body } }
+      
+      it { expect(flash[:success]).to eq('Comment updated successfully.') }
+      it { expect(comment.reload.body).to eq(updated_body) }
+    end  
+  end
+
   describe 'DELETE #destroy' do
     let(:admin) { create(:admin_user, login: 'Admin') }
     let(:comment) { create(:comment_project, user: user) }
