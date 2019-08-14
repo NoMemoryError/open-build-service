@@ -67,18 +67,37 @@ RSpec.describe Webui::CommentsController, type: :controller do
     end
   end
 
-  describle 'PUT/PATCH #update' do
-    let(:admin) { create(:admin_user, login: 'Admin') }
+  describe 'PUT/PATCH #update' do
     let(:comment) { create(:comment_project, user: user) }
-    let(:other_comment) { create(:comment_project) }
     let(:updated_body) { 'Updated body' }
 
-    context 'update own comments' do
-      before { patch :update, params: { id: comment.id, body: updated_body } }
-      
+    before { patch :update, params: { id: comment.id, comment: { body: updated_body } } }
+
+    context 'comments update with empty body' do
+      let(:updated_body) { '' }
+
+      it { expect(flash[:error]).to eq('Failed to update comment.') }
+      it { expect(comment.reload.body).not_to(eq(updated_body)) }
+    end
+
+    context 'user updates their own comments' do
       it { expect(flash[:success]).to eq('Comment updated successfully.') }
       it { expect(comment.reload.body).to eq(updated_body) }
-    end  
+    end
+
+    context 'cannot update another user comments' do
+      let(:comment) { create(:comment_project) }
+
+      it { expect(flash[:error]).to eq('Sorry, you are not authorized to update this Comment.') }
+      it { expect(comment.reload.body).not_to(eq(updated_body)) }
+    end
+
+    context 'admin user can update all comments' do
+      let(:user) { create(:admin_user, login: 'Admin') }
+
+      it { expect(flash[:success]).to eq('Comment updated successfully.') }
+      it { expect(comment.reload.body).to eq(updated_body) }
+    end
   end
 
   describe 'DELETE #destroy' do

@@ -24,5 +24,5 @@ class CommentPolicy < ApplicationPolicy
   def update?
     return false if user.blank?
     return true if user.is_admin? || user == record.user
-  end  
+  end
 end

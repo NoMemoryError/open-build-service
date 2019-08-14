@@ -26,6 +26,19 @@ class Webui::CommentsController < Webui::WebuiController
 
   def update
     return if params[:no_switch].nil? && switch_to_webui2
+
+    comment = Comment.find(params[:id])
+    authorize comment, :update?
+    respond_to do |format|
+      if comment.update(permitted_params)
+        flash[:success] = 'Comment updated successfully.'
+        format.json { render json: { flash: render_flash } }
+      else
+        flash[:error] = 'Failed to update comment.'
+        format.json { render json: { flash: render_flash }, status: :unprocessable_entity }
+      end
+      format.html { redirect_back(fallback_location: root_path) }
+    end
   end
 
   def destroy

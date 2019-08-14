@@ -1,8 +1,8 @@
-.modal.fade{ id: "edit-comment-modal-#{comment.id}", tabindex: -1, role: 'dialog', 
+.modal.fade{ id: "edit-comment-modal-#{comment.id}", tabindex: -1, role: 'dialog',
              aria: { labelledby: 'edit-comment-modal-label', hidden: true } }
   .modal-dialog.modal-dialog-centered{ role: 'document' }
     .modal-content
-      = form_for(comment, url: comment_path(comment), method: :patch, remote: true, 
+      = form_for(comment, url: comment_path(comment), method: :patch, remote: true,
                  html: { class: 'edit-comment-form' }) do |form|
         .modal-header
           %h5.modal-title#edit-comment-modal-label Edit Comment
@@ -13,4 +13,3 @@
               class: 'w-100 mb-3 form-control comment-field'
         .modal-footer
           = render partial: 'webui2/shared/dialog_action_buttons', locals: { submit_tag_text: 'Update' }
-        

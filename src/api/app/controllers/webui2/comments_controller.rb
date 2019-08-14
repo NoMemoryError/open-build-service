@@ -22,13 +22,12 @@ module Webui2::CommentsController
     comment = Comment.find(params[:id])
     authorize comment, :update?
     @commentable = comment.commentable
-    comment.update!(permitted_params)
     respond_to do |format|
       if comment.update(permitted_params)
         flash.now[:success] = 'Comment updated successfully.'
         status = :ok
       else
-        flash.now[:error] = 'Failed to update comment'
+        flash.now[:error] = 'Failed to update comment.'
         status = :unprocessable_entity
       end
       format.html do

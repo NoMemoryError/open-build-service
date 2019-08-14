@@ -16,43 +16,33 @@ RSpec.describe CommentPolicy do
 
   subject { CommentPolicy }
 
-  permissions :update? do
-    it 'doesnot allow unauthenticated users to update comments' do
+  shared_examples 'update/delete shared permissions' do
+    it 'doesnot allow unauthenticated users to update/delete comments' do
       expect(subject).not_to permit(nil, comment)
     end
 
-    it 'allows admin to update any comment' do
+    it 'allows admin to update/delete any comment' do
       expect(subject).to permit(admin_user, comment)
     end
 
-    it 'allow users to update their own comments' do
+    it 'allow users to update/delete their own comments' do
       expect(subject).to permit(comment_author, comment)
     end
 
-    it 'doesnot allow user to update comment by other user' do
+    it 'doesnot allow user to update/delete comment by other user' do
       expect(subject).not_to permit(user, comment)
-    end  
+    end
   end
-  
+
+  permissions :update? do
+    it_behaves_like 'update/delete shared permissions'
+  end
+
   permissions :destroy? do
-    it 'Not logged users cannot destroy comments' do
-      expect(subject).not_to permit(nil, comment)
-    end
-
-    it 'Admin can destroy any comments' do
-      expect(subject).to permit(admin_user, comment)
-    end
-
-    it 'Users can destroy their own comments' do
-      expect(subject).to permit(comment_author, comment)
-    end
+    it_behaves_like 'update/delete shared permissions'
 
     it 'Logged users can destroy comments by deleted users' do
       expect(subject).to permit(comment_author, comment_deleted_user)
-    end
-
-    it 'User cannot destroy comments of other user' do
-      expect(subject).not_to permit(user, comment)
     end
 
     context 'with a comment of a Package' do
